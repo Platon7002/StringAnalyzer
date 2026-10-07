@@ -1,24 +1,19 @@
 
-const val TARGET = "kot"      // искомая подстрока
-const val ALPHABET_SIZE = 26  // букв в латинском алфавите
+const val TARGET = "kot"   
+const val ALPHABET_SIZE = 26 
 
-/** Результаты подсчёта символов. */
 class TextStats(
     val totalChars: Int,
     val digits: Int,
     val spaces: Int,
-    val otherChars: Int,   // кириллица, знаки препинания и всё остальное
-    val lower: IntArray,   // счётчики строчных a–z
+    val otherChars: Int, 
+    val lower: IntArray,  
     val upper: IntArray    // счётчики заглавных A–Z
-)
 
-/** Читает строку. Если ввода нет совсем (null) — считаем строку пустой. */
 fun readInput(): String {
     print("Введите строку: ")
     return readlnOrNull() ?: ""
 }
-
-/** Один проход по строке: классифицируем каждый символ. */
 fun analyze(text: String): TextStats {
     var digits = 0
     var spaces = 0
@@ -38,7 +33,6 @@ fun analyze(text: String): TextStats {
     return TextStats(text.length, digits, spaces, others, lower, upper)
 }
 
-/** Общее количество букв a–z и A–Z. */
 fun totalLetters(stats: TextStats): Int {
     var sum = 0
     for (i in 0 until ALPHABET_SIZE) {
@@ -47,12 +41,10 @@ fun totalLetters(stats: TextStats): Int {
     return sum
 }
 
-/** Количество уникальных символов (вложенные циклы). */
 fun countUnique(text: String): Int {
     var unique = 0
     for (i in text.indices) {
         var seenBefore = false
-        // смотрим, не встречался ли этот символ раньше
         for (j in 0 until i) {
             if (text[j] == text[i]) {
                 seenBefore = true
@@ -66,7 +58,6 @@ fun countUnique(text: String): Int {
     return unique
 }
 
-/** Таблица: сколько раз встретилась каждая буква (строчная / заглавная). */
 fun buildLettersTable(stats: TextStats): String {
     val sb = StringBuilder()
     for (i in 0 until ALPHABET_SIZE) {
@@ -79,14 +70,13 @@ fun buildLettersTable(stats: TextStats): String {
     return if (sb.isEmpty()) "  букв нет" else sb.toString().trimEnd()
 }
 
-/** Гистограмма (вложенные циклы). Заглавные и строчные объединены. */
 fun buildHistogram(stats: TextStats): String {
     val sb = StringBuilder()
-    for (i in 0 until ALPHABET_SIZE) {                // внешний цикл — по буквам
+    for (i in 0 until ALPHABET_SIZE) {              
         val total = stats.lower[i] + stats.upper[i]
         if (total > 0) {
             sb.append("  ").append('a' + i).append(':')
-            for (star in 1..total) {                  // внутренний цикл — по звёздочкам
+            for (star in 1..total) {              
                 sb.append('*')
             }
             sb.append('\n')
@@ -95,14 +85,13 @@ fun buildHistogram(stats: TextStats): String {
     return if (sb.isEmpty()) "  букв нет" else sb.toString().trimEnd()
 }
 
-/** Поиск подстроки без indexOf: два вложенных цикла, регистр не важен. */
 fun containsIgnoreCase(text: String, target: String): Boolean {
     if (text.length < target.length) {
         return false
     }
-    for (start in 0..text.length - target.length) {   // где начинается совпадение
+    for (start in 0..text.length - target.length) {   
         var match = true
-        for (offset in target.indices) {              // сравниваем символ за символом
+        for (offset in target.indices) {             
             if (text[start + offset].lowercaseChar() != target[offset].lowercaseChar()) {
                 match = false
                 break
@@ -115,7 +104,6 @@ fun containsIgnoreCase(text: String, target: String): Boolean {
     return false
 }
 
-/** Многострочный отчёт. */
 fun buildReport(text: String, stats: TextStats, unique: Int, hasKot: Boolean): String {
     val shownText = if (text.isEmpty()) "(пустая строка)" else text
     val letters = totalLetters(stats)
