@@ -8,7 +8,7 @@ class TextStats(
     val spaces: Int,
     val otherChars: Int, 
     val lower: IntArray,  
-    val upper: IntArray    // счётчики заглавных A–Z
+    val upper: IntArray  
 
 fun readInput(): String {
     print("Введите строку: ")
